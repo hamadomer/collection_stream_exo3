@@ -44,7 +44,7 @@ public class Main {
 
         Map<Client, Integer> finalResualt = new HashMap<>();
 
-        loginList.forEach(login -> {
+        loginList.stream().forEach(login -> {
             // find a client that has logged and haven't bought any item, the same day or 7 days after
             boolean clientFound = purchaseList.stream()
                     .anyMatch(purchase -> purchase.getClient().equals(login.getClient()) &&
@@ -55,6 +55,9 @@ public class Main {
             }
         });
 
-        finalResualt.forEach((client, count) -> System.out.println(client.getLastName() + " " + client.getFirstName() + " " + client.getBirthDate() + " - " + count));
+        finalResualt.entrySet().stream().forEach(entry -> {
+            Client client = entry.getKey();
+            System.out.println(client.getLastName() + " " + client.getFirstName() + " " + client.getBirthDate() + " - " + entry.getValue());
+        });
     }
 }
