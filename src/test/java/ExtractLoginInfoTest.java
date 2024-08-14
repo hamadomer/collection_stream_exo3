@@ -1,16 +1,22 @@
-package org.example;
+import org.example.Client;
+import org.example.ExtractLoginInfo;
+import org.example.Login;
+import org.example.Purchase;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-public class Main {
-    public static void main(String[] args) {
+
+public class ExtractLoginInfoTest {
+
+
+    @Test
+    public void testExtractLoginInfo() {
         List<Purchase> purchaseList = new ArrayList<>();
-        List<Login> loginList = new ArrayList<Login>();
+        List<Login> loginList = new ArrayList<>();
 
         Purchase purchase1 = new Purchase(new Client("Dupond", "Jean", LocalDate.of(1990, 3, 12)), "Savon", 3, LocalDate.of(2024, 8, 1));
         Purchase purchase2 = new Purchase(new Client("Dupond", "Jean", LocalDate.of(1990, 3, 12)), "Serviette", 1, LocalDate.of(2024, 8, 1));
@@ -42,6 +48,35 @@ public class Main {
         loginList.add(log6);
         loginList.add(log7);
 
-        System.out.println(ExtractLoginInfo.getLoginWithoutPurchase(loginList, purchaseList).get(0));
+        List<String> resualt = ExtractLoginInfo.getLoginWithoutPurchase(loginList, purchaseList);
+
+        Assertions.assertNotNull(resualt);
+        Assertions.assertEquals(1, resualt.size());
+        Assertions.assertEquals("Dupond Jean 1990-03-12 - 3", resualt.get(0));
+    }
+
+    @Test
+    public void testExtractLoginInfoWithSameNameDifferentBirthDate() {
+        List<Purchase> purchaseList = new ArrayList<>();
+        List<Login> loginList = new ArrayList<>();
+
+        Purchase purchase1 = new Purchase(new Client("Dupond", "Jean", LocalDate.of(1990, 3, 12)), "Savon", 3, LocalDate.of(2024, 8, 1));
+        Login log1 = new Login(new Client("Dupond", "Jean", LocalDate.of(1990, 3, 12)), LocalDate.of(2024, 6, 4));
+
+        purchaseList.add(purchase1);
+        loginList.add(log1);
+
+        Purchase purchase2 = new Purchase(new Client("Dupond", "Jean", LocalDate.of(1990, 3, 11)), "Savon", 3, LocalDate.of(2024, 8, 1));
+        Login log2 = new Login(new Client("Dupond", "Jean", LocalDate.of(1990, 3, 11)), LocalDate.of(2024, 6, 4));
+
+        purchaseList.add(purchase2);
+        loginList.add(log2);
+
+        List<String> resualt = ExtractLoginInfo.getLoginWithoutPurchase(loginList, purchaseList);
+
+        Assertions.assertNotNull(resualt);
+        Assertions.assertEquals(2, resualt.size());
+        Assertions.assertEquals("Dupond Jean 1990-03-11 - 1", resualt.get(0));
+        Assertions.assertEquals("Dupond Jean 1990-03-12 - 1", resualt.get(1));
     }
 }

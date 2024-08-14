@@ -3,7 +3,7 @@ package org.example;
 import java.time.LocalDate;
 import java.util.Objects;
 
-class Client {
+public class Client {
     private String lastName;
     private String firstName;
     private LocalDate birthDate;
